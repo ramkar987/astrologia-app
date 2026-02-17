@@ -42,7 +42,7 @@ _Para previsões personalizadas, aguarde a configuração completa da API._"""
         if not configurar_gemini():
             return "Erro: API não configurada corretamente."
         
-        model = genai.GenerativeModel('gemini-2.0-flash-exp')
+        model = genai.GenerativeModel('gemini-1.5-flash')
         
         prompt = f"""Gere um horóscopo para {signo} para o dia {data.strftime('%d/%m/%Y')}.
 
@@ -131,3 +131,4 @@ Máximo 200 palavras, tom positivo e construtivo."""
     
     except Exception as e:
         return f"Erro ao analisar compatibilidade: {str(e)}"
+
