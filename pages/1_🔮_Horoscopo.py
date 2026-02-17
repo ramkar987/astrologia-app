@@ -1,8 +1,9 @@
 import streamlit as st
 from datetime import datetime
 import sys
-sys.path.append('..')
-from utils.gemini_ai import gerar_horoscopo
+import streamlit as st
+from datetime import datetime
+from utils.gemini_ai import gerar_horoscopo  # ✅ Import direto
 
 st.set_page_config(page_title="Horóscopo Diário", page_icon="🔮", layout="wide")
 
