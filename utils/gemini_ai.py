@@ -23,6 +23,7 @@ def configurar_gemini():
     return False
 
 
+@st.cache_data(ttl=86400)  # Cache de 24 horas
 def gerar_horoscopo(signo, data):
     """
     Gera horóscopo diário para um signo específico
@@ -42,8 +43,8 @@ _Para previsões personalizadas, aguarde a configuração completa da API._"""
         if not configurar_gemini():
             return "Erro: API não configurada corretamente."
         
-        # ✅ MODELO CORRETO
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        # ✅ MODELO ESTÁVEL E FUNCIONAL
+        model = genai.GenerativeModel('gemini-pro')
         
         prompt = f"""Gere um horóscopo para {signo} para o dia {data.strftime('%d/%m/%Y')}.
 
@@ -61,6 +62,7 @@ Tom: acolhedor, místico e positivo. Máximo 150 palavras no total."""
         return f"Erro ao gerar horóscopo: {str(e)}\n\nVerifique se a API key está configurada corretamente."
 
 
+@st.cache_data(ttl=3600)  # Cache de 1 hora
 def interpretar_mapa_basico(posicoes_planetas):
     """
     Gera interpretação básica de um mapa astral
@@ -78,8 +80,8 @@ _Interpretação completa disponível em breve._"""
         if not configurar_gemini():
             return "Erro: API não configurada."
         
-        # ✅ MODELO CORRETO
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        # ✅ MODELO ESTÁVEL E FUNCIONAL
+        model = genai.GenerativeModel('gemini-pro')
         
         sol = posicoes_planetas['Sol']['signo']
         lua = posicoes_planetas['Lua']['signo']
@@ -98,6 +100,7 @@ Máximo 100 palavras, tom acolhedor."""
         return f"Erro ao interpretar mapa: {str(e)}"
 
 
+@st.cache_data(ttl=3600)
 def analisar_compatibilidade(signo1, signo2, tipo_relacao):
     """
     Analisa compatibilidade astrológica entre dois signos
@@ -115,8 +118,8 @@ _Análise completa disponível em breve._"""
         if not configurar_gemini():
             return "Erro: API não configurada."
         
-        # ✅ MODELO CORRETO
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        # ✅ MODELO ESTÁVEL E FUNCIONAL
+        model = genai.GenerativeModel('gemini-pro')
         
         prompt = f"""Analise a compatibilidade astrológica entre {signo1} e {signo2} 
 em um relacionamento {tipo_relacao}.
