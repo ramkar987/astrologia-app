@@ -1,9 +1,6 @@
 import streamlit as st
 from datetime import datetime
-import sys
-import streamlit as st
-from datetime import datetime
-from utils.gemini_ai import gerar_horoscopo  # ✅ Import direto
+from utils.gemini_ai import gerar_horoscopo
 
 st.set_page_config(page_title="Horóscopo Diário", page_icon="🔮", layout="wide")
 
@@ -12,36 +9,16 @@ st.markdown("### Descubra o que os astros reservam para você hoje")
 
 # Signos e seus emojis
 signos = {
-    "Áries": "♈",
-    "Touro": "♉",
-    "Gêmeos": "♊",
-    "Câncer": "♋",
-    "Leão": "♌",
-    "Virgem": "♍",
-    "Libra": "♎",
-    "Escorpião": "♏",
-    "Sagitário": "♐",
-    "Capricórnio": "♑",
-    "Aquário": "♒",
-    "Peixes": "♓"
+    "Áries": "♈", "Touro": "♉", "Gêmeos": "♊", "Câncer": "♋",
+    "Leão": "♌", "Virgem": "♍", "Libra": "♎", "Escorpião": "♏",
+    "Sagitário": "♐", "Capricórnio": "♑", "Aquário": "♒", "Peixes": "♓"
 }
 
-# Seleção de signo
 col1, col2 = st.columns([2, 3])
 
 with col1:
-    signo_selecionado = st.selectbox(
-        "Escolha seu signo:",
-        options=list(signos.keys()),
-        index=0
-    )
-    
-    data_horoscopo = st.date_input(
-        "Data:",
-        value=datetime.now(),
-        max_value=datetime.now()
-    )
-    
+    signo_selecionado = st.selectbox("Escolha seu signo:", options=list(signos.keys()), index=0)
+    data_horoscopo = st.date_input("Data:", value=datetime.now(), max_value=datetime.now())
     gerar_btn = st.button("✨ Gerar Horóscopo", type="primary", use_container_width=True)
 
 with col2:
@@ -51,19 +28,14 @@ with col2:
         with st.spinner("🌙 Consultando os astros..."):
             try:
                 horoscopo = gerar_horoscopo(signo_selecionado, data_horoscopo)
-                
                 st.markdown("#### 💫 Sua Previsão")
                 st.info(horoscopo)
-                
-                # Botão para compartilhar (simulado)
                 st.markdown("---")
                 st.success("💡 **Dica**: Volte amanhã para sua nova previsão!")
-                
             except Exception as e:
                 st.error(f"⚠️ Erro ao gerar horóscopo: {str(e)}")
-                st.info("Verifique se a API key do Gemini está configurada corretamente em `.streamlit/secrets.toml`")
+                st.info("Verifique se a API key do Gemini está configurada nos Secrets.")
 
-# Informações adicionais
 st.divider()
 
 col_a, col_b, col_c = st.columns(3)
@@ -95,6 +67,5 @@ with col_c:
     }
     st.write(qualidades[signo_selecionado])
 
-# CTA Premium
 st.divider()
 st.warning("💎 **Premium**: Horóscopo semanal e mensal + análises personalizadas - R$ 19,90/mês")
