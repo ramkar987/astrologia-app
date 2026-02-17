@@ -1,9 +1,12 @@
 import streamlit as st
 from datetime import datetime, time
 import sys
-sys.path.append('..')
-from utils.astro_calc import calcular_mapa
+import streamlit as st
+from datetime import datetime, time
+from utils.astro_calc import calcular_mapa  # ✅ Import direto
 from utils.gemini_ai import interpretar_mapa_basico
+
+
 
 st.set_page_config(page_title="Mapa Astral", page_icon="✨", layout="wide")
 
