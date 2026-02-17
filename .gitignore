@@ -1,8 +1,24 @@
-# .gitignore
+# Secrets (NÃO subir para GitHub!)
 .streamlit/secrets.toml
+
+# Python
 __pycache__/
 *.pyc
-.env
+*.pyo
+*.pyd
+.Python
 venv/
+env/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Ambiente
+.env
 *.key
-secrets.toml
