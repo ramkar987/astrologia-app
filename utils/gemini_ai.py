@@ -42,6 +42,7 @@ _Para previsões personalizadas, aguarde a configuração completa da API._"""
         if not configurar_gemini():
             return "Erro: API não configurada corretamente."
         
+        # ✅ MODELO CORRETO
         model = genai.GenerativeModel('gemini-1.5-flash')
         
         prompt = f"""Gere um horóscopo para {signo} para o dia {data.strftime('%d/%m/%Y')}.
@@ -77,7 +78,8 @@ _Interpretação completa disponível em breve._"""
         if not configurar_gemini():
             return "Erro: API não configurada."
         
-        model = genai.GenerativeModel('gemini-2.0-flash-exp')
+        # ✅ MODELO CORRETO
+        model = genai.GenerativeModel('gemini-1.5-flash')
         
         sol = posicoes_planetas['Sol']['signo']
         lua = posicoes_planetas['Lua']['signo']
@@ -113,7 +115,8 @@ _Análise completa disponível em breve._"""
         if not configurar_gemini():
             return "Erro: API não configurada."
         
-        model = genai.GenerativeModel('gemini-2.0-flash-exp')
+        # ✅ MODELO CORRETO
+        model = genai.GenerativeModel('gemini-1.5-flash')
         
         prompt = f"""Analise a compatibilidade astrológica entre {signo1} e {signo2} 
 em um relacionamento {tipo_relacao}.
@@ -131,4 +134,3 @@ Máximo 200 palavras, tom positivo e construtivo."""
     
     except Exception as e:
         return f"Erro ao analisar compatibilidade: {str(e)}"
-
