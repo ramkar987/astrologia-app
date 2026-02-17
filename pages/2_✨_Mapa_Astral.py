@@ -1,11 +1,18 @@
 import streamlit as st
 from datetime import datetime, time
 from utils.astro_calc import calcular_mapa
+from utils.geocoding import buscar_coordenadas, sugerir_cidades_brasil
 
 st.set_page_config(page_title="Mapa Astral", page_icon="✨", layout="wide")
 
 st.title("✨ Mapa Astral Natal")
 st.markdown("### Descubra as posições planetárias no momento do seu nascimento")
+
+# Armazenar dados no session_state
+if 'latitude' not in st.session_state:
+    st.session_state.latitude = -30.0346
+if 'longitude' not in st.session_state:
+    st.session_state.longitude = -51.2177
 
 with st.form("dados_nascimento"):
     col1, col2 = st.columns(2)
@@ -18,27 +25,61 @@ with st.form("dados_nascimento"):
     
     with col2:
         st.markdown("#### 📍 Local de Nascimento")
-        cidade = st.text_input("Cidade:", placeholder="Ex: Porto Alegre")
         
-        col_lat, col_lon = st.columns(2)
-        with col_lat:
-            latitude = st.number_input("Latitude:", value=-30.03, format="%.4f")
-        with col_lon:
-            longitude = st.number_input("Longitude:", value=-51.23, format="%.4f")
+        # Opção: buscar automaticamente ou inserir manualmente
+        modo = st.radio("Como deseja informar?", 
+                       ["🔍 Buscar cidade", "✍️ Inserir coordenadas manualmente"],
+                       horizontal=True)
         
-        st.caption("💡 Dica: Pesquise 'latitude longitude [sua cidade]' no Google")
+        if modo == "🔍 Buscar cidade":
+            cidade = st.text_input("Digite a cidade:", placeholder="Ex: Porto Alegre, RS")
+            
+            # Botão para buscar coordenadas (fora do form)
+            if cidade:
+                st.caption("📍 As coordenadas serão calculadas automaticamente ao processar")
+            
+            # Valores temporários (serão atualizados)
+            latitude = st.session_state.latitude
+            longitude = st.session_state.longitude
+            
+        else:
+            cidade = st.text_input("Cidade (referência):", placeholder="Ex: Porto Alegre")
+            col_lat, col_lon = st.columns(2)
+            with col_lat:
+                latitude = st.number_input("Latitude:", value=st.session_state.latitude, format="%.4f")
+            with col_lon:
+                longitude = st.number_input("Longitude:", value=st.session_state.longitude, format="%.4f")
+            
+            st.caption("💡 Dica: Pesquise 'latitude longitude [sua cidade]' no Google")
     
     calcular_btn = st.form_submit_button("🌙 Calcular Mapa Astral", type="primary", use_container_width=True)
 
+# Processamento
 if calcular_btn:
     if not cidade:
         st.error("⚠️ Por favor, preencha a cidade de nascimento")
     else:
+        # Se modo busca automática, buscar coordenadas
+        if modo == "🔍 Buscar cidade":
+            with st.spinner(f"🔍 Buscando coordenadas de {cidade}..."):
+                lat_encontrada, lon_encontrada, endereco_completo = buscar_coordenadas(cidade)
+                
+                if lat_encontrada and lon_encontrada:
+                    latitude = lat_encontrada
+                    longitude = lon_encontrada
+                    st.session_state.latitude = latitude
+                    st.session_state.longitude = longitude
+                    st.success(f"📍 Localização encontrada: {endereco_completo}")
+                else:
+                    st.error("⚠️ Não foi possível encontrar a cidade. Tente incluir o estado (ex: 'Porto Alegre, RS') ou use coordenadas manuais.")
+                    st.stop()
+        
         with st.spinner("🔮 Calculando posições planetárias..."):
             try:
                 posicoes = calcular_mapa(data_nasc, hora_nasc, latitude, longitude)
                 
                 st.success(f"✅ Mapa calculado para {data_nasc.strftime('%d/%m/%Y')} às {hora_nasc.strftime('%H:%M')} em {cidade}")
+                st.caption(f"📍 Coordenadas: {latitude}, {longitude}")
                 
                 st.markdown("---")
                 st.markdown("## 🌟 Posições Planetárias")
@@ -63,23 +104,33 @@ if calcular_btn:
                 st.markdown("## 💬 Interpretação Básica (Gratuita)")
                 
                 interpretacao = f"""
-**Sol em {posicoes['Sol']['signo']}**: Representa sua essência e identidade.
+**Sol em {posicoes['Sol']['signo']}**: Representa sua essência, identidade e forma de brilhar no mundo.
 
-**Lua em {posicoes['Lua']['signo']}**: Suas emoções e mundo interior.
+**Lua em {posicoes['Lua']['signo']}**: Revela seu mundo emocional, necessidades afetivas e como você processa sentimentos.
 
-**Ascendente**: Para calcular o ascendente com precisão, considere a versão Premium.
+**Mercúrio em {posicoes['Mercúrio']['signo']}**: Mostra seu estilo de comunicação e forma de pensar.
                 """
                 st.info(interpretacao)
                 
-                st.warning("💎 **Premium**: Interpretação completa + Casas + Aspectos + Relatório PDF - R$ 19,90/mês")
+                st.warning("💎 **Premium**: Interpretação completa com todos os planetas + Casas + Ascendente + Aspectos + Relatório PDF - R$ 19,90/mês")
                 
             except Exception as e:
                 st.error(f"⚠️ Erro ao calcular mapa: {str(e)}")
 
+# Cidades sugeridas (expandable)
+with st.expander("🏙️ Ver coordenadas de cidades principais"):
+    cidades_sugeridas = sugerir_cidades_brasil()
+    
+    cols = st.columns(3)
+    for idx, (cidade_nome, coords) in enumerate(cidades_sugeridas.items()):
+        with cols[idx % 3]:
+            st.markdown(f"**{cidade_nome}**")
+            st.caption(f"Lat: {coords[0]}, Lon: {coords[1]}")
+
 st.divider()
 st.markdown("### ℹ️ Sobre o Mapa Astral")
 st.markdown("""
-O mapa astral mostra as posições planetárias no momento do seu nascimento.
+O mapa astral mostra as posições planetárias no momento exato do seu nascimento.
 
 **Elementos principais:**
 - **Planetas**: Energias e funções psicológicas
