@@ -1,4 +1,4 @@
-# Secrets (NÃO subir para GitHub!)
+# Secrets - NUNCA subir para GitHub!
 .streamlit/secrets.toml
 
 # Python
@@ -6,10 +6,12 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.Python
 venv/
 env/
 .venv
+
+# Arquivos de teste temporários
+test_*.py
 
 # IDEs
 .vscode/
