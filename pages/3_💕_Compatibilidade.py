@@ -1,7 +1,9 @@
 import streamlit as st
 import sys
-sys.path.append('..')
-from utils.gemini_ai import analisar_compatibilidade
+import streamlit as st
+from utils.gemini_ai import analisar_compatibilidade  # ✅ Import direto
+
+
 
 st.set_page_config(page_title="Compatibilidade", page_icon="💕", layout="wide")
 
